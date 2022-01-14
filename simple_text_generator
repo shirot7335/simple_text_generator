@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+set -eu
+
+readonly CMDNAME="$(basename $0)"
+
+declare -A OPTION_SET
+
+TEMPLATE_FILE_PATH=''
+DIST_FILE_PATH=''
+
+#LEFT_DELIMTER='{{'
+#RIGHT_DELIMITER='}}'
+
+# FIXME: STINNNNNNNNNNNNNNNNNNNn!!
+function usage_exit() {
+    cat <<HELP
+Usage: ${CMDNAME} [OPTION]...
+[OPTION]
+    --help                           Display help
+    --template=<template_file_path>  Use the given <template_file_path> when generate file.
+    --dist=<dist_file_path>          Use the given <dist_file_path> when generate file.
+    --KEY=VALUE                      KEY is template file string surrounded by delimiter({{ }}).
+                                     VALUE is the string after conversion by this script.
+HELP
+
+    exit 1;
+}
+
+# FOR DEBUG {{{
+
+function debug_print_all() {
+    echo '==============================================='
+    debug__print_template_file_path
+    debug__print_dist_file_path
+    debug__print_option_set
+    echo '==============================================='
+}
+
+function debug__print_template_file_path() {
+    echo "template: "${TEMPLATE_FILE_PATH}""
+}
+
+function debug__print_dist_file_path() {
+    echo "dist: "${DIST_FILE_PATH}
+}
+
+function debug__print_option_set() {
+    for key in "${!OPTION_SET[@]}"; do
+        value="${OPTION_SET[${key}]}"
+
+        echo "key: ${key}"
+        echo "value: ${value}"
+    done
+}
+# }}}
+
+function build_sed_expression() {
+    from="${1}"
+    to="${2}"
+
+    echo "-e 's/{{${from}}}/${to}/g'"
+}
+
+# sed -e '~~~' -e '~~~' filepath
+function build_sed_command() {
+    filepath="${1}"
+
+    sed_command='sed'
+    for key in "${!OPTION_SET[@]}"; do
+        value="${OPTION_SET[${key}]}"
+
+        sed_expression="$(build_sed_expression "${key}" "${value}")"
+        sed_command=""${sed_command}" "${sed_expression}""
+    done
+
+    echo ""${sed_command}" "${filepath}""
+}
+
+function generate_file() {
+    filepath="${1}"
+    distpath="${2}"
+
+    eval "$(build_sed_command "${1}")" > "${distpath}"
+}
+
+function main() {
+    generate_file "${TEMPLATE_FILE_PATH}" "${DIST_FILE_PATH}"
+}
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+        --help)
+            usage_exit
+            ;;
+        --template=*)
+            TEMPLATE_FILE_PATH="$(echo $1 | sed -e 's/^--template=//')"
+            ;;
+        --dist=*)
+            DIST_FILE_PATH="$(echo $1 | sed -e 's/^--dist=//')"
+            ;;
+        --*=*)
+            key=$(echo $1 | sed -e 's/^--\(.*\)=.*/\1/')
+            value=$(echo $1 | sed -e 's/^--.*=\(.*\)/\1/')
+            OPTION_SET["${key}"]="${value}"
+            ;;
+   esac
+   shift
+done
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    debug_print_all
+
+    main
+fi
+
+
+exit 0
