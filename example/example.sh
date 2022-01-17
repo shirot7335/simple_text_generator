@@ -7,7 +7,7 @@ dist_file_dir="${curdir}/dist"
 
 cd "${curdir}/.."
 
-./simple_text_generator \
+./tgen \
     --template="${template_file_dir}/template.txt" \
     --dist="${dist_file_dir}/result.txt" \
     --greeting="Hello" \

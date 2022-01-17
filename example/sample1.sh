@@ -16,14 +16,14 @@ cd "${curdir}/.."
 echo "${curdir}"
 
 cat <<COMMAND
-./simple_text_generator \
+./tgen \
     --template="${template_file_dir}/sample1.txt" \
     --dist="${dist_file_dir}/sample1_result.txt" \
     --key1=rock \
     --key2=metal
 COMMAND
 
-./simple_text_generator \
+./tgen \
     --template="${template_file_dir}/sample1.txt" \
     --dist="${dist_file_dir}/sample1_result.txt" \
     --key1=rock \
@@ -39,6 +39,6 @@ echo '=================================================='
 
 
 echo 'HELP'
-./simple_text_generator --help
+./tgen --help
 
 exit 0
