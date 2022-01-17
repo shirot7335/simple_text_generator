@@ -1,4 +1,4 @@
-SCRIPT := simple_text_generator
+SCRIPT := tgen
 CURRENTDIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 PREFIX := ${HOME}/local
