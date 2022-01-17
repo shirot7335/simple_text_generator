@@ -9,12 +9,8 @@ declare -A OPTION_SET
 TEMPLATE_FILE_PATH=''
 DIST_FILE_PATH=''
 
-#LEFT_DELIMTER='{{'
-#RIGHT_DELIMITER='}}'
-
-# FIXME: STINNNNNNNNNNNNNNNNNNNn!!
 function usage_exit() {
-    cat <<HELP
+    cat <<HELP 1>&2
 Usage: ${CMDNAME} [OPTION]...
 [OPTION]
     --help                           Display help
@@ -62,7 +58,6 @@ function build_sed_expression() {
     echo "-e 's/{{${from}}}/${to}/g'"
 }
 
-# sed -e '~~~' -e '~~~' filepath
 function build_sed_command() {
     filepath="${1}"
 
