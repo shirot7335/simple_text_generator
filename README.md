@@ -27,13 +27,14 @@ Usage: ${CMDNAME} [OPTION]...
 
 ## Example
 
-/your/template/file/path/template.txt
+* /your/template/file/path/template.txt
 ```
 This is template file.
 
 {{greeting}} {{target}}.
 ```
 
+* command
 ```bash
 $ tgen \
       --template=/your/template/file/path/template.txt \
@@ -42,7 +43,7 @@ $ tgen \
       --target="world"
 ```
 
-/you/want/to/output/file/path/result.txt
+* /you/want/to/output/file/path/result.txt
 ```
 This is template file.
 
