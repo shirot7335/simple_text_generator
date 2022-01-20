@@ -73,6 +73,40 @@ function debug__print_option_set() {
 }
 # }}}
 
+function error_message() {
+    message_type="${1}"
+    function cannot_access() {
+        echo "${CMDNAME}: cannot access '${file_path}': No such file or directory" 1>&2
+    }
+
+   "${message_type}"
+}
+
+function _check_file_path() {
+    file_path="${1}"
+
+    if [ -e "${file_path}" ]; then
+        true
+    else
+        error_message "cannot_access"
+        false
+    fi
+}
+
+function check_template_file_path() {
+    _check_file_path "${TEMPLATE_FILE_PATH}"
+}
+
+function check_dist_file_dir_path() {
+    _check_file_path "$(dirname "${DIST_FILE_PATH}")"
+}
+
+function check_required_settings() {
+    check_template_file_path && \
+    check_dist_file_dir_path || \
+    exit 1
+}
+
 function build_sed_expression() {
     from="${1}"
     to="${2}"
@@ -127,7 +161,7 @@ do
 done
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    #debug_print_all
+    check_required_settings
 
     main
 fi
